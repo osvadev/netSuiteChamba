@@ -21,7 +21,7 @@ define(['N/record', 'N/log', 'N/render', 'N/xml'],
             var sucursalText = cliente.getText({ fieldId: 'custentity25' });
             var subsidiaryText = cliente.getText({ fieldId: 'subsidiary' });
             var imageBack = getImageBackGround(sucursal);
-			var sucReal = sucursalReal(sucursalText);
+			    var sucReal = sucursalReal(sucursalText);
 
 
             var avisoPrivacidadbase64 = caso.getValue({ fieldId: 'custevent328' });

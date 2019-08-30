@@ -4,53 +4,51 @@
  * @NModuleScope Public
  */
 
-define(['N/record', 'N/log', 'N/render', 'N/xml'],
+define(['N/record','N/log','N/render','N/xml'],
 
-  function (record, log, render, xmlMod) {
+function(record,log,render,xmlMod) {
 
     function onRequest(context) {
       //log.debug('method: ', context.request.method);
       var recId = context.request.parameters.recordCaseId;
-      var caso = record.load({ type: 'supportcase', id: recId });
+      var caso = record.load({type: 'supportcase', id: recId});
 
-      var companyId = caso.getValue({ fieldId: 'company' });
-      var cliente = record.load({ type: 'customer', id: companyId }); // , isDynamic: true
-      var numExpediente = cliente.getValue({ fieldId: 'entityid' });
-      var altname = cliente.getValue({ fieldId: 'altname' });
-      var sucursal = cliente.getValue({ fieldId: 'custentity25' });
-      var sucursalText = cliente.getText({ fieldId: 'custentity25' });
-      var subsidiaryText = cliente.getText({ fieldId: 'subsidiary' });
+      var companyId = caso.getValue({fieldId: 'company'});
+      var cliente = record.load({type: 'customer', id: companyId}); // , isDynamic: true
+      var numExpediente = cliente.getValue({fieldId: 'entityid'});
+      var altname = cliente.getValue({fieldId: 'altname'});
+      var sucursal = cliente.getValue({fieldId: 'custentity25'});
+      var sucursalText = cliente.getText({fieldId: 'custentity25'});
+      var subsidiaryText = cliente.getText({fieldId: 'subsidiary'});
       var imageBack = getImageBackGround(sucursal);
-      var sucReal = sucursalReal(sucursalText);
 
 
-      var avisoPrivacidadbase64 = caso.getValue({ fieldId: 'custevent515' });
-      if (avisoPrivacidadbase64 != "" && avisoPrivacidadbase64 != null) {
-        if (avisoPrivacidadbase64.substring(0, 3) == "ok_")
-          avisoPrivacidadbase64 = avisoPrivacidadbase64.substring(3, avisoPrivacidadbase64.length);
+
+      var avisoPrivacidadbase64 = caso.getValue({fieldId: 'custevent328'});
+      if(avisoPrivacidadbase64 != "" && avisoPrivacidadbase64 != null)
+      {
+        if(avisoPrivacidadbase64.substring(0,3) == "ok_")
+          avisoPrivacidadbase64 = avisoPrivacidadbase64.substring(3,avisoPrivacidadbase64.length);
       }
-      else {
+      else
+      {
         avisoPrivacidadbase64 = "#";
       }
       //caso.save();
       var fecha = new Date();
-      fecha = fecha.getDate() + "/" + (fecha.getMonth() + 1) + "/" + fecha.getFullYear();
+    fecha = fecha.getDate() + "/" + (fecha.getMonth() +1) + "/" + fecha.getFullYear();
 
-      var avisoMexico = '<p style="width:70%;color:#000000;font-family:Aria, sans-serif;align:center"><b>FORMULARIO DE EXCLUSIÓN DE FOTOGRAFÍA PARA EXPEDIENTE CLÍNICO ELECTRÓNICO</b></p>' +
-        '<br/><p style="font-family:Aria, sans-serif; font-size:12px;">El expediente clínico electrónico es una fuente de información que amplía el dictamen médico experto, conformándose por una descripción médica aunado a documentos, imágenes, procedimientos, pruebas diversas, análisis e información de estudios practicados al paciente.</p>' +
-
-        '<p style="font-family:Aria, sans-serif; font-size:12px;">Comprendo que el expediente clínico electrónico de manera integral, representa una base para conocer las condiciones de salud, los actos médicos, los diferentes procedimientos ejecutados por el equipo médico así como los resultados y progreso de mi tratamiento.</p>' +
-
-        '<p style="font-family:Aria, sans-serif; font-size:12px;">Por tal motivo, entiendo que al denegar el permiso de toma de fotografías para integrar dicho expediente, los médicos no contarán con referencias gráficas para documentar el seguimiento completo de mi tratamiento.</p>' +
-
-        '<p style="font-family:Aria, sans-serif; font-size:12px;">(Solo firme si rechaza el permiso)</p>' +
-
-        '<p style="font-family:Aria, sans-serif; font-size:12px;">No otorgo autorización para la toma de fotografías y/o videos durante mi proceso de tratamiento en Kaloni Holding Group, Sociedad Civil constituida de acuerdo a las leyes mexicanas con domicilio fiscal en Ave. Vasco de Quiroga 3900 Int. 401, Colonia Santa Fe, Cuajimalpa de Morelos, Ciudad de México Código Postal 05348.</p>' +
-
-        '<p style="font-family:Aria, sans-serif; font-size: 12px;">Firmo la presente, en <b>' + sucReal + ' a ' + fecha + ' </b></p><br/>' +
-
-        '<p style="font-family:Aria, sans-serif; font-size:12px;">Atentamente,</p>';
-
+      var avisoMexico = '<p style="width:35%;color:#000000;font-family:Aria, sans-serif;align:center"><b>CARTA DE AUTORIZACIÓN DE USO DE IMAGEN</b></p>';
+      avisoMexico += '<p style="font-size: medium;color:#000000;font-family:Aria, sans-serif;"><b>KALONI HOLDING GROUP S.C.</b></p>';
+      avisoMexico += '<p style="font-size: medium;font-family:Aria, sans-serif;">CIUDAD DE MÉXICO A: <b> '+ fecha +' </b></p>';
+      avisoMexico += '<p style="font-family:Aria, sans-serif; font-size:12px;">Yo <b>'+ altname +'</b> otorgo a KALONI HOLDING GROUP S.C., en adelante “LA EMPRESA”, mi consentimiento para que se me tomen fotografías mientras recibo tratamiento en la clínica de “LA EMPRESA”, la presente autorización se extenderá durante el procedimiento, en el periodo de revisiones y posteriormente para documentar los resultados de mi tratamiento por lo tanto entiendo que no estará sujeto a temporalidad alguna. El término “fotografía” incluye video o fotografía fija, en formato digital o de otro tipo, y cualquier otro medio de registro o reproducción de imágenes.</p>';
+      avisoMexico += '<p></p>';
+      avisoMexico += '<p style="font-family:Aria, sans-serif; font-size:12px;">Doy mi consentimiento para que se me tomen fotografías y autorizo el uso o la divulgación de tales fotografías a fin de contribuir con los objetivos científicos, de tratamiento, educativos, de relaciones públicas, de mercadotecnia, de medios de comunicación y benéficos. Autorizo a "LA EMPRESA", la utilización de mi imagen en campañas, promocionales y demás materiales de apoyo que considere pertinentes para la difusión y promoción de "KALONI" que se distribuya en el país o en el extranjero por cualquier medio, ya sea impreso, electrónico, digital o cualquier otro. </p>';
+      avisoMexico += '<p></p>';
+      avisoMexico += '<p style="font-family:Aria, sans-serif; font-size:12px;">Es mi deseo establecer que esta autorización es voluntaria y gratuita y, por el presente renuncio a cualquier derecho a recibir compensación por tales usos en virtud de la autorización precedente. Por lo anterior me comprometo a no ejercer ninguna acción encaminada a reclamar alguna gratificación, regalía o concepto semejante y expresamente renuncio a aquella acción que pudiera proceder por el uso la o las fotografías, ya que estoy plenamente consciente de los alcances de mi consentimiento otorgado y estoy de acuerdo en que sea utilizada mi imagen para los fines anteriormente señalados.</p>';
+      avisoMexico += '<p></p>';
+      avisoMexico += '<p style="font-family:Aria, sans-serif; font-size:12px;">Atentamente,</p>';
+      avisoMexico += '<p></p><p></p><p></p><p></p>';
 
       var avisoColombia = '<p style="width:35%;color:#000000;font-family:Aria, sans-serif;align:center"><b>AVISO DE PRIVACIDAD</b></p>';
       avisoColombia += '<p style="font-family:Aria, sans-serif; font-size:12px;">De conformidad con la Ley 1581 de 2012, artículo 10 del decreto reglamentario 1377 de 2013 y al artículo 20 del Decreto 0722 de 2013, <b>KALONI COLOMBIA S.A.S.</b>, en adelante Kaloni, sociedad comercial debidamente constituida bajo las leyes colombianas, con NIT. 900852763-1 con domicilio en Colombia en la ciudad de Bogotá D.C localizada en la Carrera 9 No. 113-52 Edificio Torres Unidas 2 Local 102, ponemos a su disposición nuestro Aviso de Privacidad y Política de Tratamiento de Datos Personales, la cual tiene como propósito informar las prácticas en relación con la búsqueda, tratamiento y comunicación de la información que nos sea proporcionada a través de este sitio web.</p>';
@@ -63,12 +61,12 @@ define(['N/record', 'N/log', 'N/render', 'N/xml'],
       avisoColombia += '<p style="font-family:Aria, sans-serif; font-size:12px;">A través de formularios de registro, usted nos proporciona sus datos con la finalidad de agendar una cita o solicitar información acerca de los servicios de su interés.</p>';
       avisoColombia += '<p style="font-family:Aria, sans-serif; font-size:12px;">A través de su uso del sitio web obtenemos direcciones IP, datos de registros, tipo y preferencias de navegador, información de ubicación, identificadores en línea para habilitar «cookies» y tecnologías similares.</p>';
       avisoColombia += '<p style="font-family:Aria, sans-serif; font-size:12px;">Al momento de utilizar el sitio, acepta los Términos de Uso de este sitio web y del presente aviso de privacidad. Parte de la información que usted envíe puede ser información de identificación o de carácter personal (es decir, información que únicamente puede estar relacionada con usted, como su nombre completo, domicilio, dirección de e-mail, número de teléfono). Al enviar sus datos a través de este sitio web, sean personales o no, está aceptando y, por consiguiente dando su consentimiento expreso de manera libre e inequívoca, para que dichos datos puedan ser objeto de búsqueda, tratamiento y comunicación de acuerdo con la presente Política de Tratamiento de Datos Personales.</p>';
-      avisoColombia += '<p style="font-family:Aria, sans-serif; font-size:12px;">Se informará sobre qué datos son obligatorios y cuales optativos.</p>';
+    avisoColombia += '<p style="font-family:Aria, sans-serif; font-size:12px;">Se informará sobre qué datos son obligatorios y cuales optativos.</p>';
       avisoColombia += '<p style="font-family:Aria, sans-serif; font-size:12px;"><b>¿Para qué usamos sus datos?</b></p>';
       avisoColombia += '<p style="font-family:Aria, sans-serif; font-size:12px;">Kaloni utilizará los datos depositados en este sitio para transmitirle información (si la ha solicitado), realizar operaciones de marketing, realizar estudios y otras actividades con fines de comercialización y ofrecimiento de servicios y para cualquier otro fin especificado en el presente aviso.</p>';
       avisoColombia += '<p style="font-family:Aria, sans-serif; font-size:12px;">Si el tratamiento se basa en su consentimiento, usted tiene el derecho de retirar su consentimiento en cualquier momento. Esto no afectará a la validez del tratamiento anterior a la retirada del consentimiento.</p>';
-      avisoColombia += '<p style="font-family:Aria, sans-serif; font-size:12px;">Los datos que se le solicitan son los oportunos y estrictamente necesarios para la finalidad para la que se solicitan, y en ningún caso está usted obligado a facilitárnoslos. Así mismo, damos por correctos y ciertos todos los datos que nos facilita y que éstos son veraces y pertinentes para la finalidad por la que se lo solicitamos.</p>';
-      avisoColombia += '<p style="font-family:Aria, sans-serif; font-size:12px;"><b>Seguridad de su información personal</b></p>';
+    avisoColombia += '<p style="font-family:Aria, sans-serif; font-size:12px;">Los datos que se le solicitan son los oportunos y estrictamente necesarios para la finalidad para la que se solicitan, y en ningún caso está usted obligado a facilitárnoslos. Así mismo, damos por correctos y ciertos todos los datos que nos facilita y que éstos son veraces y pertinentes para la finalidad por la que se lo solicitamos.</p>';
+    avisoColombia += '<p style="font-family:Aria, sans-serif; font-size:12px;"><b>Seguridad de su información personal</b></p>';
       avisoColombia += '<p style="font-family:Aria, sans-serif; font-size:12px;">Tenemos implementados en este sitio web estándares comerciales de tecnología y seguridad operacional para proteger a nuestros visitantes de accesos no autorizados, revelación, alteración o destrucción toda la información proporcionada.</p>';
       avisoColombia += '<p style="font-family:Aria, sans-serif; font-size:12px;"><b>¿Cómo almacenamos sus datos?</b></p>';
       avisoColombia += '<p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>';
@@ -80,7 +78,7 @@ define(['N/record', 'N/log', 'N/render', 'N/xml'],
       avisoColombia += '<p style="font-family:Aria, sans-serif; font-size:12px;">&nbsp;&nbsp;&nbsp;- Solicitar prueba de la autorización de Tratamiento otorgada.</p>';
       avisoColombia += '<p style="font-family:Aria, sans-serif; font-size:12px;">&nbsp;&nbsp;&nbsp;- Ser informado respecto del uso que el responsable le ha dado a los datos personales.</p>';
       avisoColombia += '<p style="font-family:Aria, sans-serif; font-size:12px;">&nbsp;&nbsp;&nbsp;- Presentar ante los organismos de control correspondientes, quejas por infracciones a lo dispuesto en la normativa vigente</p>';
-      avisoColombia += '<p style="font-family:Aria, sans-serif; font-size:12px;">&nbsp;&nbsp;&nbsp;y las demás normas que la modifiquen, adicionen o complementen.</p>';
+            avisoColombia += '<p style="font-family:Aria, sans-serif; font-size:12px;">&nbsp;&nbsp;&nbsp;y las demás normas que la modifiquen, adicionen o complementen.</p>';
       avisoColombia += '<p style="font-family:Aria, sans-serif; font-size:12px;">&nbsp;&nbsp;&nbsp;- Acceder en forma gratuita a los datos personales que hayan sido objeto de Tratamiento.</p>';
       avisoColombia += '<p style="font-family:Aria, sans-serif; font-size:12px;"><b>¿Quién es responsable de los datos personales recopilados?</b></p>';
       avisoColombia += '<p style="font-family:Aria, sans-serif; font-size:12px;">Kaloni, sociedad comercial debidamente constituida bajo las leyes colombianas, con NIT. 900852763-1 con domicilio en Colombia en la ciudad de Bogotá D.C localizada en la Carrera 9 No. 113-52 Edificio Torres Unidas 2 Local 102, será el Responsable y/o Encargado del tratamiento de los datos personales de sus clientes, y clientes prospectivos obtenidos durante el uso este sitio web y sus actividades de negocio.</p>';
@@ -160,32 +158,34 @@ define(['N/record', 'N/log', 'N/render', 'N/xml'],
       var xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
       xml += '<!DOCTYPE pdf PUBLIC "-//big.faceless.org//report" "report-1.1.dtd">\n';
       xml += '<pdf>\n';
-      xml += '<body background-image="' + xmlMod.escape({ xmlText: imageBack }) + '" >';
+      xml += '<body background-image="'+xmlMod.escape({xmlText : imageBack})+'" >';
 
       xml += '<p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>';
-      if (subsidiaryText == "Mexico") {
+      if(subsidiaryText == "Mexico"){
         xml += avisoMexico;
-      } else if (subsidiaryText == "Colombia") {
+      }else if(subsidiaryText == "Colombia"){
         xml += avisoColombia;
-      } else if (subsidiaryText == "España") {
+      }else if(subsidiaryText == "España"){
         xml += avisoEspana;
-      } else {
+      }else{
         xml += avisoMexico;
       }
 
-      xml += '<p style="align:center"><img src="' + avisoPrivacidadbase64 + '" width="100" height="100" /></p>';
+      xml += '<p style="align:center"><img src="'+avisoPrivacidadbase64+'" width="100" height="100" /></p>';
       xml += '<p style="align:center;font-family:Aria, sans-serif; font-size:13px;"><b>____________________________<br/>FIRMA DEL TESTIMONIAL</b></p>';
 
       xml += '</body></pdf>';
-      context.response.renderPdf({ xmlString: xml });
+      context.response.renderPdf({xmlString: xml});
     }
 
-    function getImageBackGround(sucursal) {
+    function getImageBackGround(sucursal){
       var imageBack = "";
-      if (sucursal != "22" && sucursal != "35" && sucursal != "36" && sucursal != "23" && sucursal != "24" && sucursal != "25" && sucursal != "37" && sucursal != "21" && sucursal != "26" && sucursal != "27" && sucursal != "28") {
-        imageBack = "https://system.na2.netsuite.com/core/media/media.nl?id=2067732&c=3559763&h=3d8d3a19ab5ca8a24c17";
+      if(sucursal != "22" && sucursal != "35" && sucursal != "36" && sucursal != "23" && sucursal != "24" && sucursal != "25" && sucursal != "37" && sucursal != "21" && sucursal != "26" && sucursal != "27" && sucursal != "28")
+      {
+         imageBack = "https://system.na2.netsuite.com/core/media/media.nl?id=2067732&c=3559763&h=3d8d3a19ab5ca8a24c17";
       }
-      else {
+      else
+      {
         /*if(sucursal == "22") // Altavista KHG
           imageBack = "https://system.na2.netsuite.com/core/media/media.nl?id=2072817&c=3559763&h=b46ce55f681b894177a5";
         if(sucursal == "35") // Can-Cun KHG
@@ -209,21 +209,15 @@ define(['N/record', 'N/log', 'N/render', 'N/xml'],
         if(sucursal == "28") // Veracruz KHG
           imageBack = "https://system.na2.netsuite.com/core/media/media.nl?id=2072831&c=3559763&h=c36c12d839db5bd27d20";
           */
-        imageBack = "https://system.na2.netsuite.com/core/media/media.nl?id=2067732&c=3559763&h=3d8d3a19ab5ca8a24c17";
+         imageBack = "https://system.na2.netsuite.com/core/media/media.nl?id=2067732&c=3559763&h=3d8d3a19ab5ca8a24c17";
       }
       return imageBack;
     }
 
-    function sucursalReal(sucursalText) {
-      var largoSucrusal = sucursalText.length;
-      largoSucrusal = largoSucrusal - 4;
-      var sucursalFinal = sucursalText.slice(0, largoSucrusal);
-      return sucursalFinal;
-    }
 
 
     return {
-      onRequest: onRequest
+        onRequest: onRequest
     };
 
-  });
+});

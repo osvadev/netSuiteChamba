@@ -5,59 +5,42 @@
  */
 define(['N/record', 'N/search', 'N/file'],
 
-    function (record, search, file) {
+    /**
+     * 
+     * @param {*} record 
+     * @param {*} search 
+     * @param {*} file 
+     */
 
-        /**
-         * Function definition to be triggered before record is loaded.
-         *
-         * @param {Object} scriptContext
-         * @param {Record} scriptContext.newRecord - New record
-         * @param {string} scriptContext.type - Trigger type
-         * @param {Form} scriptContext.form - Current form
-         * @Since 2015.2
-         */
+    function (record, search, file) {
 
         function beforeLoad(context) {
 
         }
 
-        /**
-         * Function definition to be triggered before record is loaded.
-         *
-         * @param {Object} scriptContext
-         * @param {Record} scriptContext.newRecord - New record
-         * @param {Record} scriptContext.oldRecord - Old record
-         * @param {string} scriptContext.type - Trigger type
-         */
         function beforeSubmit(context) {
 
         }
 
         /**
-         * Function definition to be triggered before record is loaded.
-         *
-         * @param {Object} scriptContext
-         * @param {Record} scriptContext.newRecord - New record
-         * @param {Record} scriptContext.oldRecord - Old record
-         * @param {string} scriptContext.type - Trigger type
+         * 
+         * @param {*} context // Contexto actual de trabajo
          */
+
         function afterSubmit(context) {
             var currentRecord = context.newRecord;
             var prefijo = currentRecord.getValue({ fieldId: 'custevent70' });
-            //var companyId = currentRecord.getValue({ fieldId: 'company' });
 
             if ((prefijo == "12") && (context.type == 'create')) {
-                //var currentRecord = context.newRecord;
-                //var prefijo = currentRecord.getValue({ fieldId: 'custevent70' });
                 var companyId = currentRecord.getValue({ fieldId: 'company' });
                 var cliente = record.load({ type: 'customer', id: companyId });
                 var subsidiary = cliente.getValue({ fieldId: 'subsidiary' });
-                var subsidiaryText = cliente.getText({ fieldId: 'subsidiary' });
                 var sucursal = cliente.getValue({ fieldId: 'custentity25' });
-                var sucursalText = cliente.getText({ fieldId: 'custentity25' });
                 var clienteId = cliente.getValue({ fieldId: 'entityid' });
                 var clienteIdText = cliente.getText({ fieldId: 'entityid' });
-                //log.error('subsidiaryText: ', subsidiaryText);
+                var sucursalText = cliente.getText({ fieldId: 'custentity25' });
+                //var subsidiaryText = cliente.getText({ fieldId: 'subsidiary' });
+                //log.error('subsidiaryText: ', subsidiaryText); //Muestra la subsidiaria del paciente
 
                 // Validación para proceso de creación automatico de folders por subsidiaria
                 // México = 6
@@ -66,55 +49,48 @@ define(['N/record', 'N/search', 'N/file'],
                 // España = 12
                 // Eominicana = 16
                 // Dallas = 15
-                if (subsidiary == "6") {
+                //You can comment for remove all subsidiarys
+                //Comment only for Meixco subsidiary
+                //if (subsidiary == "6") {
+
+                if (subsidiary == "6" || subsidiary == "11" || subsidiary == "10" || subsidiary == "12" || subsidiary == "16" || subsidiary == "15") {
 
                     var boolSuc = false;
 
-                    var mySearch = search.load({ id: "-2030" });
-                    var myPagedData = mySearch.runPaged({ "pageSize": 30 });
-                    myPagedData.pageRanges.forEach(function (pageRange) {
-                        var myPage = myPagedData.fetch({ index: pageRange.index });
-                        myPage.data.forEach(function (result) {
-                            var jsonString = JSON.stringify(result);
-                            var obj = JSON.parse(jsonString);
-                            if (obj.hasOwnProperty("id")) {
-                                var sucursalId_Search = obj.id;
-                                if (sucursal === sucursalId_Search) {
-                                    boolSuc = true;
-                                    var name_Search = result.getValue({ name: 'name' });
-
-                                    // Busqueda el nombre del folder de la sucursal
-                                    search.create({
-                                        type: search.Type.FOLDER,
-                                        filters: [search.createFilter({ name: 'name', operator: search.Operator.IS, values: [name_Search + "_HAIR"] })],
-                                        columns: ['internalid']
-                                    }).run().each(function (result) {
-                                        customerid = result.getValue({ name: 'internalid' });
-                                    });
-                                }
-                            }
-                        });
+                    // Busqueda el nombre del folder de la sucursal
+                    search.create({
+                        type: search.Type.FOLDER,
+                        filters: [search.createFilter({ name: 'name', operator: search.Operator.IS, values: [sucursalText + "_HAIR"] })],
+                        columns: ['internalid']
+                    }).run().each(function (result) {
+                        folderId = result.getValue({ name: 'internalid' });
                     });
 
-                    if (boolSuc == false)
-                        log.debug('Sucursal no encontrada!!: ', 'Sucursal No. ' + sucursal + 'no esta registrada en la lista "Locations"');
-                        log.debug('Sucursal Mexico fuera del Try: ', customerid);
+                    if (folderId != null) {
+                        boolSuc = true;
+                    }
+
+                    if (boolSuc == false) {
+                        log.debug('El cliente registrado no tiene una Sucursal registrada: ' + cliente);
+                        //log.debug('Sucursal Mexico fuera del Try: ', folderid);
+                    }
 
                     try {
-                        log.debug('SucursalId: ', customerid);
+                        log.debug('SucursalId: ', folderId);
                         log.debug('ClienteId: ', clienteId);
+                        //log.debug('Mi datos de página:', sucursalId_Search);
                         /**
                         * SOBREESCRITURA DE VARIABLES PARA REALIZAR PRUEBAS
                         * folderSucursalId_test => id carpeta de sucursal {int}
                         * clienteId => id de cliente {string} --> ejemplo HG-70494
                         * 
                         */
-                        //var folderSucursalId_test = 1569113; //suple customerid
+                        //var folderSucursalId_test = 1569113; //suple folderid
                         //var clienteId_test = "TEST-70494"; // suple clienteIdText
 
                         /** AUTOMATION: CREATE FOLDER OF CLIENT
                          * Creación de folder de cliente al crear el evento de valoracion
-                         * customerid => variable que indica el id del folder de la sucursal
+                         * folderid => variable que indica el id del folder de la sucursal
                          * clienteId => variable que para el texto del id del cliente
                          */
                         var createFolderC = record.create({
@@ -123,7 +99,7 @@ define(['N/record', 'N/search', 'N/file'],
                         });
                         createFolderC.setValue({
                             fieldId: 'parent',
-                            value: customerid
+                            value: folderId
                         });
                         createFolderC.setValue({
                             fieldId: 'name',
@@ -193,30 +169,27 @@ define(['N/record', 'N/search', 'N/file'],
                     } catch (error) {
                         log.error("Exception: ", error);
                     }
-
-
-
-
                 }
             }
-            //Función para la creación del archivo por defecto NetSuiteInf.txt
-            function createDefaultFile(folderParent) {
-                var createDefaultFile = file.create({
-                    name: 'NetSuiteInf.txt',
-                    fileType: file.Type.PLAINTEXT,
-                    contents: 'Archivo creado por script',
-                    encoding: file.Encoding.UTF8,
-                    folder: folderParent
-                });
-                var NetSuiteInfId = createDefaultFile.save();
+        }
 
-                return NetSuiteInfId;
-            }
-        };
+        //Función para la creación del archivo por defecto NetSuiteInf.txt
+        function createDefaultFile(folderParent) {
+            var createDefaultFile = file.create({
+                name: 'NetSuiteInf.txt',
+                fileType: file.Type.PLAINTEXT,
+                contents: 'Archivo creado por script',
+                encoding: file.Encoding.UTF8,
+                folder: folderParent
+            });
+            var NetSuiteInfId = createDefaultFile.save();
+
+            return NetSuiteInfId;
+        }
 
         return {
-            //beforeLoad: beforeLoad,
-            //beforeSubmit: beforeSubmit,
-            afterSubmit: afterSubmit
+            //beforeLoad: beforeLoad, //carga la funcion beforeLoad que se usa antes de que la pagina sea cargada
+            //beforeSubmit: beforeSubmit, // carga la funcion beforeSubmit se usa después de que el registro sea enviado
+            afterSubmit: afterSubmit // carga la funcion afterSubmit se usa antes de que el registro sea enviado
         };
     });

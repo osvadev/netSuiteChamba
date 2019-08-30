@@ -3,7 +3,7 @@
 * @NScriptType ClientScript
 * @NModuleScope Public
 */
-define(['N/record', 'N/url', 'N/https'], function (record, url, https) {
+define(['N/url', 'N/record'], function (url, record) {
 
     function pageInit(context) {
     }
@@ -11,17 +11,22 @@ define(['N/record', 'N/url', 'N/https'], function (record, url, https) {
     function onButtonClick() {
         var recId = document.getElementById('id').value;
         var companyid = document.getElementById('companyid').value;
-        var valURl = url.resolveScript({
-            scriptId: 'customscript1143',
-            deploymentId: 'customdeploy1',
-            params: { recId: recId, compaId: companyid }
-        });
-        //console.log('URL suitelet:', valURl);
+
+        var valURl = url.resolveScript({ scriptId: 'customscript1149', deploymentId: 'customdeploy1', params: { recordCaseId: recId, compaId: companyid } });
+        window.open("" + valURl + "");
+    }
+
+    function onButtonClick2() {
+        var recId = document.getElementById('id').value;
+        var companyid = document.getElementById('companyid').value;
+
+        var valURl = url.resolveScript({ scriptId: 'customscript1144', deploymentId: 'customdeploy1', params: { recordCaseId: recId, compaId: companyid } });
         window.open("" + valURl + "");
     }
 
     return {
         pageInit: pageInit,
-        onButtonClick: onButtonClick
+        onButtonClick: onButtonClick,
+        onButtonClick2 : onButtonClick2
     };
 });

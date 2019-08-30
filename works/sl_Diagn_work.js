@@ -517,23 +517,10 @@ function crearPDFCaso(valid){
         xml += '<tr><td>TX:</td></tr>';
         xml += '<tr><td height="100" background-color="#CCD1D1" style="border: 1px solid black"><b>'+tx+'</b></td></tr>';
         xml += '</table>';
-        //xml += '<br></br>';
-        //xml += "<table width=\"550\" style=\"font-family:'Aria', sans-serif;\" >";
-        //xml += "<tr>";
-        //xml += "<td style=\"font-family:'Aria', sans-serif\" align=\"center\"><img src=\""+diagnosticoFirmaPacienteBase64+"\" width=\"100\" height=\"100\" />";
-        //xml += "</td>";
-        //xml += "<td style=\"font-family:'Aria', sans-serif\" align=\"center\"><img src=\""+diagnosticoFirmaMedicoBase64+"\" width=\"100\" height=\"100\" />";
-        //xml += "</td>";
-        //xml += "</tr>";
-        //xml += "<tr>";
-        //xml += "<td width=\"300\" style=\"font-family:'Aria', sans-serif\" align=\"center\"><u> " + checado(name) + "</u></td>";
-        //xml += "<td width=\"300\" style=\"font-family:'Aria', sans-serif\" align=\"center\"><u> " + checado(nameMedico) + "</u></td>"; // checado(consultor_val)
-        //xml += "</tr>";
-        //xml += "<tr>";
-        //xml += "<td width=\"300\" style=\"font-family:'Aria', sans-serif\" align=\"center\"><b>Nombre y Firma del Paciente</b></td>";
-        //xml += "<td width=\"300\" style=\"font-family:'Aria', sans-serif\" align=\"center\"><b>Nombre y Firma</b></td>";
-        //xml += "</tr>";
-        //xml += "</table>";
+
+        //Formulario Exclusión de Fotografía
+        xml += ''
+
 
         xml += '</body>\n</pdf>';
 
